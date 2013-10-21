@@ -25,7 +25,7 @@ while True:
 				ser.write(bytes("1", 'UTF-8'))
 			else:
 			    ser.write(bytes("1", 'UTF-8'))
-			    time.sleep(0.5)
+			    #time.sleep(0.5)
 			# Print ou the response
 			sys.stdout.write("\r\x1b[KArduino: Recieved \""+content+"\". Polled #"+str(counter)+' times. '+msg)
 			sys.stdout.flush()

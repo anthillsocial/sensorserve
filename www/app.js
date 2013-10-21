@@ -1,35 +1,44 @@
-
-/**
- * Module dependencies.
+/* 
+ * app.js
+ * 
+ * Our base app code, including Express configs
  */
 
-var express = require('express');
-var routes = require('./routes');
-var user = require('./routes/user');
-var http = require('http');
-var path = require('path');
+var express = require('express')
+  , engine = require('ejs-locals')
+  , app = express();
 
-var app = express();
+exports.init = function(port) {
 
-// all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+    app.configure(function(){
+        app.set('views', __dirname + '/views');
+        app.set('view engine', 'ejs');
+        app.use(express.bodyParser());
+        app.use(express.methodOverride());
+        app.use(express.static(__dirname + '/static'));
+        app.use(app.router);
+        app.enable("jsonp callback");
+    });
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+    app.engine('ejs', engine);
+
+    app.configure('development', function(){
+       app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+        // app.use(express.logger({ format: ':method :url' }));
+    });
+
+    app.configure('production', function(){
+       app.use(express.errorHandler()); 
+    });
+
+
+    app.use( function(err, req, res, next) {
+        res.render('500.ejs', { locals: { error: err }, status: 500 });
+    });
+    
+    server = app.listen(port);
+
+    console.log("Listening on port %d in %s mode", server.address().port, app.settings.env);
+
+    return app;
 }
-
-app.get('/', routes.index);
-app.get('/users', user.list);
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});

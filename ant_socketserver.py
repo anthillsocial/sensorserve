@@ -12,8 +12,8 @@ class EchoKill():
         print(cols.OKGREEN+"Network: Closed all old open sockets"+cols.E)
         # kill any currently open sockets
         try:
-            pid = os.popen("netstat -tulnap 2>/dev/null | grep "+str(port)+" | awk {'print $7'} | awk -F/ {'print $1'}").read()
-            os.popen("kill -9 "+pid+" 2>/dev/null")
+            os.popen("netstat -tulnap 2>/dev/null | grep "+str(port)+" | awk {'print $7'} | awk -F/ {'print $1'} | xargs -I {} kill -9 {}").read()
+            #os.popen("kill -9 "+pid+" 2>/dev/null")
         except Exception as e:
             print(cols.OKGREEN+"Network: All old sockets cleared"+cols.E)
 
