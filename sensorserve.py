@@ -1,30 +1,37 @@
 #! /usr/bin/env python3
 import serial, time, os, re, sys
+from ant_socketserver import *
+
 port = '/dev/ttyACM2'
 connected = 0
 counter = 0
 dotcount = 0
-
+# Server host, port (set host to '127.0.0.1' for lovcal connections only)
+server = EchoServer('', 2005)
 
 while True:
 	if connected == 1:
-		## Try a read a serial data
 		try:
+			# Check the network for any commands
+			networkmsg = server.new_data()
+			if networkmsg!=-1:
+				print(cols.OKGREEN+"\nNetwork: Action="+networkmsg+cols.E)
+			# Read data being sent by the ardunio
 			content = ser.readline()
 			content = content.decode("utf-8").strip()
 			msg  = "";
 			if content == 'A':
-				msg = "Arduino ready, waiting for instruction."
-			##match = re.search(r'\w\w\w', content)
-			##print(content, end="")
-			# write the variables to the same line
-			#sys.stdout.write(content)
-			sys.stdout.write("\r\x1b[K"+str(counter)+' Recieving "'+content+'" '+msg)
+				msg = "Ready & waiting for instruction..."
+				ser.write(bytes("1", 'UTF-8'))
+			else:
+			    ser.write(bytes("1", 'UTF-8'))
+			    time.sleep(0.5)
+			# Print ou the response
+			sys.stdout.write("\r\x1b[KArduino: Recieved \""+content+"\". Polled #"+str(counter)+' times. '+msg)
 			sys.stdout.flush()
 			counter += 1
 		except Exception as e:
-			print()
-			print("Lost connection to arduino with error: "+str(e))
+			print("\nArduino: Lost connection with error: "+str(e))
 			connected = 0
 	else:
 		## Check USB connection is up
@@ -37,7 +44,7 @@ while True:
 		# Now try and open a serial connection
 		try:
 			ser = serial.Serial(port, 9600, timeout=1)
-			print ('\nConnected to Arduino on port: '+port)
+			print ('\nArduino: Connected via port "'+port+'"')
 			connected = 1;
 		except Exception as e:
 			if usb!="Arduino":
@@ -46,9 +53,9 @@ while True:
 				else:
 					dotcount += 1;
 				dots = "."*dotcount
-				sys.stdout.write("\r\x1b[K"+"No USB Arduino device found. Searching"+dots)
+				sys.stdout.write("\r\x1b[K Arduino"+"No USB device found. Searching"+dots)
 			else:
-				print("\nConnected to Arduino but no connection on: "+port)
+				print("\nArduino: Plugged in but no communication via port: "+port)
 			connected = 0 
 			
 
