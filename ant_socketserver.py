@@ -24,7 +24,7 @@ class EchoHandler(asyncore.dispatcher_with_send):
     def handle_read(self):
         data = self.recv(8192)
         if data:
-            self.send(data)
+            # self.send(data) echo test
             data = str(data.decode("utf-8")).strip()
             EchoHandler.data = data
             print (cols.OKGREEN+'\nNetwork: Recieved command "'+data+'"'+cols.E)
@@ -58,6 +58,9 @@ class EchoServer(asyncore.dispatcher):
         if EchoServer.handler==False:
           return -1
         return EchoServer.handler.saved_data() 
+    
+    def senddata(self, newstr):
+        self.handler.send(bytes(newstr, 'UTF-8'))
 
 class cols:
     HEADER = '\033[95m'
