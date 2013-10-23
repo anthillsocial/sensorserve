@@ -1,4 +1,4 @@
 sensorserve
 ===========
 
-twisted
+Currently in active development - not stable!!
