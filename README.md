@@ -6,6 +6,7 @@ Not neccessericly  stable!! These scripts have been greatly informed by the foll
 http://theanthillsocial.co.uk/wifungi and
 http://transport.yoha.co.uk
 
+Then subsequently further developed as part of the Citizen Sense project.
 
 ## License
 Author: Tom Keene
