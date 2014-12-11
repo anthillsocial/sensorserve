@@ -8,4 +8,5 @@ http://transport.yoha.co.uk
 
 
 ## License
+Author: Tom Keene
 Unless otherwise stated all code in this repository is released under a GNU General Public License
